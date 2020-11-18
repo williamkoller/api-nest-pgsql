@@ -1,0 +1,37 @@
+version: '3.7'
+services:
+  # API Nest
+  api_nest:
+    build: .
+    restart: always
+    env_file:
+      - .env
+    ports:
+      - ${PORT}:${PORT}
+    depends_on:
+      - db_pgsql
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/nodule_modules
+    networks:
+      - webnet
+
+  # DB PosgreSQL
+  db_pgsql:
+    image: postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_DB: ${DB_DATABASE_NAME}
+    volumes:
+      - pgdata:/var/lib/postgrsql/data
+    ports:
+      - ${DB_PORT}:${DB_PORT}
+    networks:
+      - webnet
+networks:
+  webnet:
+volumes:
+  pgdata:
